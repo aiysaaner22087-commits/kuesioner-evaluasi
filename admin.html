@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - Hasil Kuesioner COBIT 5</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">
+        <div class="logo">CB5</div>
+        <div>
+          <div style="font-weight:900">Admin Dashboard</div>
+          <div class="small">Hasil Kuesioner COBIT 5 (Capability) • POSPAY</div>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn btn-ghost" href="survey.html">Halaman Responden</a>
+        <button id="btnLogout" class="btn btn-ghost" type="button" style="display:none">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card" id="cardLogin">
+      <h2>Login Admin</h2>
+      <p>Masuk untuk melihat data responden dan export CSV.</p>
+
+      <form id="loginForm" class="grid">
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" required placeholder="admin@email.com" />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password" required placeholder="••••••••" />
+        </div>
+        <div class="field full">
+          <button class="btn btn-primary" type="submit">Login</button>
+          <div class="small" id="loginStatus" style="margin-top:8px"></div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card" id="cardData" style="display:none">
+      <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:flex-end">
+        <div>
+          <h2>Data Responden</h2>
+          <p class="small" id="meta"></p>
+        </div>
+        <div class="actions">
+          <button id="btnRefresh" class="btn btn-ghost" type="button">Refresh</button>
+          <button id="btnExport" class="btn btn-primary" type="button">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="tblAdmin">
+          <thead>
+            <tr>
+              <th>Waktu</th>
+              <th>Nama</th>
+              <th>Jabatan</th>
+              <th>Unit</th>
+              <th>Lama Pakai</th>
+              <th>Overall Level</th>
+              <th>Overall Score</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="hr"></div>
+      <p class="small">Klik baris untuk melihat detail (JSON).</p>
+      <pre id="detail" class="card" style="margin:0; background: rgba(2,6,23,.35)"></pre>
+    </section>
+  </main>
+
+<script>
+const SUPABASE_URL = "PASTE_SUPABASE_URL_DI_SINI";
+const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_KEY_DI_SINI";
+const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const cardLogin = document.getElementById("cardLogin");
+const cardData = document.getElementById("cardData");
+const loginForm = document.getElementById("loginForm");
+const loginStatus = document.getElementById("loginStatus");
+const btnLogout = document.getElementById("btnLogout");
+const btnRefresh = document.getElementById("btnRefresh");
+const btnExport = document.getElementById("btnExport");
+const meta = document.getElementById("meta");
+const tbody = document.querySelector("#tblAdmin tbody");
+const detail = document.getElementById("detail");
+
+let cache = [];
+
+init();
+
+async function init(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if(session){
+    showData();
+    await loadData();
+  }else{
+    showLogin();
+  }
+
+  supabase.auth.onAuthStateChange(async (_event, session)=>{
+    if(session){
+      showData();
+      await loadData();
+    }else{
+      showLogin();
+    }
+  });
+}
+
+loginForm.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  loginStatus.textContent = "Memproses...";
+  const fd = new FormData(loginForm);
+  const email = fd.get("email");
+  const password = fd.get("password");
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if(error){
+    loginStatus.textContent = "Gagal login: " + error.message;
+  }else{
+    loginStatus.textContent = "Berhasil login.";
+  }
+});
+
+btnLogout.addEventListener("click", async ()=>{
+  await supabase.auth.signOut();
+});
+
+btnRefresh.addEventListener("click", loadData);
+
+btnExport.addEventListener("click", ()=>{
+  if(!cache.length) return alert("Belum ada data.");
+  const rows = [["created_at","nama","jabatan","unit","lamaPakai","overall_level","overall_score"]];
+  cache.forEach(r=>{
+    rows.push([
+      r.created_at,
+      r.respondent?.nama || "",
+      r.respondent?.jabatan || "",
+      r.respondent?.unit || "",
+      r.respondent?.lamaPakai || "",
+      r.overall_level,
+      r.overall_score
+    ]);
+  });
+  const csv = rows.map(rw => rw.map(c => `"${String(c).replaceAll('"','""')}"`).join(",")).join("\n");
+  downloadFile(`hasil_cobit5_pospay_${Date.now()}.csv`, csv, "text/csv");
+});
+
+async function loadData(){
+  meta.textContent = "Memuat data...";
+  detail.textContent = "";
+  tbody.innerHTML = "";
+
+  const { data, error } = await supabase
+    .from("cobit_responses")
+    .select("*")
+    .order("created_at", { ascending:false });
+
+  if(error){
+    meta.textContent = "Gagal memuat: " + error.message;
+    return;
+  }
+
+  cache = data || [];
+  meta.textContent = `Total respon: ${cache.length}`;
+
+  cache.forEach(r=>{
+    const tr = document.createElement("tr");
+    tr.style.cursor = "pointer";
+    tr.innerHTML = `
+      <td>${new Date(r.created_at).toLocaleString()}</td>
+      <td>${escapeHtml(r.respondent?.nama || "-")}</td>
+      <td>${escapeHtml(r.respondent?.jabatan || "-")}</td>
+      <td>${escapeHtml(r.respondent?.unit || "-")}</td>
+      <td>${escapeHtml(r.respondent?.lamaPakai || "-")}</td>
+      <td><strong>${r.overall_level}</strong></td>
+      <td>${r.overall_score}</td>
+    `;
+    tr.addEventListener("click", ()=>{
+      detail.textContent = JSON.stringify(r, null, 2);
+      window.scrollTo({top: detail.offsetTop - 80, behavior:"smooth"});
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+function showLogin(){
+  cardLogin.style.display = "block";
+  cardData.style.display = "none";
+  btnLogout.style.display = "none";
+}
+function showData(){
+  cardLogin.style.display = "none";
+  cardData.style.display = "block";
+  btnLogout.style.display = "inline-block";
+}
+
+function downloadFile(filename, content, mime){
+  const blob = new Blob([content], { type:mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+</script>
+</body>
+</html>

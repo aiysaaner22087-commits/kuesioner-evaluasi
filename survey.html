@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kuesioner COBIT 5 (Capability) - POSPAY</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">
+        <div class="logo">CB5</div>
+        <div>
+          <div style="font-weight:900">Kuesioner COBIT 5 (Capability)</div>
+          <div class="small">Evaluasi Kinerja Aplikasi POSPAY • PT Pos Indonesia (Persero) Cabang Rengat</div>
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn btn-ghost" href="admin.html">Admin</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Petunjuk</h2>
+      <p>
+        Pilih tingkat pencapaian untuk tiap atribut proses (PA). Skala yang digunakan adalah:
+        <strong>N / P / L / F</strong>.
+      </p>
+      <div class="notice">
+        <div><strong>N</strong> (Not achieved) = 0–15%</div>
+        <div><strong>P</strong> (Partially achieved) = >15–50%</div>
+        <div><strong>L</strong> (Largely achieved) = >50–85%</div>
+        <div><strong>F</strong> (Fully achieved) = >85–100%</div>
+      </div>
+      <div class="hr"></div>
+      <p class="small">
+        Catatan: Website ini menghitung capability dengan aturan umum PAM:
+        untuk mencapai level n, atribut level n minimal <strong>L/F</strong>, dan atribut level sebelumnya harus <strong>F</strong>.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>1) Identitas Responden</h2>
+
+      <form id="formIdentitas" class="grid">
+        <div class="field">
+          <label>Nama</label>
+          <input name="nama" required placeholder="Contoh: Andi Pratama" />
+        </div>
+        <div class="field">
+          <label>Jabatan</label>
+          <input name="jabatan" required placeholder="Contoh: Customer Service / Supervisor" />
+        </div>
+        <div class="field">
+          <label>Unit/Bagian</label>
+          <input name="unit" required placeholder="Contoh: Pelayanan / Operasional" />
+        </div>
+        <div class="field">
+          <label>Lama menggunakan POSPAY</label>
+          <select name="lamaPakai" required>
+            <option value="">Pilih</option>
+            <option value="<6bulan">&lt; 6 bulan</option>
+            <option value="6-12bulan">6–12 bulan</option>
+            <option value="1-2tahun">1–2 tahun</option>
+            <option value=">2tahun">&gt; 2 tahun</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tanggal</label>
+          <input type="date" name="tanggal" required />
+        </div>
+
+        <div class="field full">
+          <button class="btn btn-primary" type="submit">Lanjut ke Kuesioner</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card" id="cardSurvey" style="display:none">
+      <h2>2) Penilaian Capability (COBIT 5 PAM)</h2>
+      <p>Isi penilaian untuk proses APO, DSS, dan MEA yang relevan dengan POSPAY.</p>
+
+      <div id="procContainer"></div>
+
+      <div class="hr"></div>
+      <div class="actions">
+        <button id="btnHitung" class="btn btn-primary" type="button">Hitung Capability</button>
+      </div>
+    </section>
+
+    <section class="card" id="cardResult" style="display:none">
+      <h2>3) Hasil</h2>
+      <div class="grid">
+        <div class="field">
+          <label>Overall Score (0–100)</label>
+          <input id="overallScore" disabled />
+        </div>
+        <div class="field">
+          <label>Overall Capability Level (0–5)</label>
+          <input id="overallLevel" disabled />
+        </div>
+        <div class="field full">
+          <div class="table-wrap">
+            <table id="tblResult">
+              <thead>
+                <tr>
+                  <th>Domain</th>
+                  <th>Proses</th>
+                  <th>Nama Proses</th>
+                  <th>Level</th>
+                  <th>Rata-rata (0–100)</th>
+                  <th>Ringkas PA</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <div class="actions">
+        <button id="btnKembali" class="btn btn-ghost" type="button">Edit Jawaban</button>
+        <button id="btnSubmit" class="btn btn-primary" type="button">Kirim Jawaban</button>
+      </div>
+
+      <p class="small" id="submitStatus" style="margin-top:10px"></p>
+    </section>
+  </main>
+
+<script>
+/** =========================
+ *  1) CONFIG SUPABASE (ISI)
+ *  ========================= */
+const SUPABASE_URL = "PASTE_SUPABASE_URL_DI_SINI";
+const SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_KEY_DI_SINI";
+const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/** =========================
+ *  2) PROSES (12 proses)
+ *  ========================= */
+const PROCESSES = [
+  { domain:"APO", code:"APO01", name:"Manage the IT Management Framework" },
+  { domain:"APO", code:"APO02", name:"Manage Strategy" },
+  { domain:"APO", code:"APO03", name:"Manage Enterprise Architecture" },
+  { domain:"APO", code:"APO07", name:"Manage Human Resources" },
+  { domain:"APO", code:"APO12", name:"Manage Risk" },
+  { domain:"APO", code:"APO13", name:"Manage Security" },
+
+  { domain:"DSS", code:"DSS01", name:"Manage Operations" },
+  { domain:"DSS", code:"DSS02", name:"Manage Service Requests and Incidents" },
+  { domain:"DSS", code:"DSS03", name:"Manage Problems" },
+  { domain:"DSS", code:"DSS05", name:"Manage Security Services" },
+
+  { domain:"MEA", code:"MEA01", name:"Monitor, Evaluate and Assess Performance and Conformance" },
+  { domain:"MEA", code:"MEA02", name:"Monitor, Evaluate and Assess the System of Internal Control" },
+];
+
+/** =========================
+ *  3) ATRIBUT PAM (PA)
+ *  ========================= */
+const ATTRS = [
+  { key:"PA1_1", label:"PA1.1 Process Performance", hint:"Proses berjalan dan menghasilkan output yang dibutuhkan." , level:1 },
+  { key:"PA2_1", label:"PA2.1 Performance Management", hint:"Proses direncanakan, dipantau, dan disesuaikan." , level:2 },
+  { key:"PA2_2", label:"PA2.2 Work Product Management", hint:"Output/artefak proses dikelola, dikendalikan, terdokumentasi." , level:2 },
+  { key:"PA3_1", label:"PA3.1 Process Definition", hint:"Proses distandarkan/ditetapkan dan terdokumentasi." , level:3 },
+  { key:"PA3_2", label:"PA3.2 Process Deployment", hint:"Proses diterapkan secara konsisten di organisasi." , level:3 },
+  { key:"PA4_1", label:"PA4.1 Process Measurement", hint:"Proses diukur dengan metrik yang jelas." , level:4 },
+  { key:"PA4_2", label:"PA4.2 Process Control", hint:"Proses terkendali dan dapat diprediksi." , level:4 },
+  { key:"PA5_1", label:"PA5.1 Process Innovation", hint:"Ada perbaikan inovatif/peningkatan terencana." , level:5 },
+  { key:"PA5_2", label:"PA5.2 Process Optimization", hint:"Optimasi berkelanjutan berbasis data dan pembelajaran." , level:5 },
+];
+
+const SCALE = [
+  { k:"N", text:"N (0–15%)", score:10 },
+  { k:"P", text:"P (>15–50%)", score:35 },
+  { k:"L", text:"L (>50–85%)", score:70 },
+  { k:"F", text:"F (>85–100%)", score:95 },
+];
+
+/** =========================
+ *  4) DOM
+ *  ========================= */
+const formIdentitas = document.getElementById("formIdentitas");
+const cardSurvey = document.getElementById("cardSurvey");
+const cardResult = document.getElementById("cardResult");
+const procContainer = document.getElementById("procContainer");
+const btnHitung = document.getElementById("btnHitung");
+const btnKembali = document.getElementById("btnKembali");
+const btnSubmit = document.getElementById("btnSubmit");
+const submitStatus = document.getElementById("submitStatus");
+
+let respondent = null;
+let answers = {};     // { "APO01": { "PA1_1":"L", ... } }
+let results = null;
+
+init();
+
+function init(){
+  // default date today
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,"0");
+  const dd = String(today.getDate()).padStart(2,"0");
+  formIdentitas.querySelector('input[name="tanggal"]').value = `${yyyy}-${mm}-${dd}`;
+
+  renderSurvey();
+}
+
+formIdentitas.addEventListener("submit", (e)=>{
+  e.preventDefault();
+  respondent = Object.fromEntries(new FormData(formIdentitas).entries());
+  cardSurvey.style.display = "block";
+  window.scrollTo({top: cardSurvey.offsetTop - 80, behavior:"smooth"});
+});
+
+function renderSurvey(){
+  procContainer.innerHTML = "";
+  PROCESSES.forEach(p=>{
+    answers[p.code] = answers[p.code] || {};
+
+    const wrap = document.createElement("div");
+    wrap.className = "proc";
+    wrap.innerHTML = `
+      <div class="proc-head">
+        <div>
+          <div style="font-weight:900">${p.code}</div>
+          <div class="small">${escapeHtml(p.name)}</div>
+        </div>
+        <div class="pill">${p.domain}</div>
+      </div>
+    `;
+
+    ATTRS.forEach(a=>{
+      const row = document.createElement("div");
+      row.className = "attr";
+      row.innerHTML = `
+        <div class="attr-title">
+          <div>
+            <div style="font-weight:800">${a.label}</div>
+            <div class="small">${escapeHtml(a.hint)}</div>
+          </div>
+          <div class="small">Level ${a.level}</div>
+        </div>
+        <div class="scale" data-proc="${p.code}" data-attr="${a.key}">
+          ${SCALE.map(s => `<button type="button" data-val="${s.k}">${s.text}</button>`).join("")}
+        </div>
+      `;
+
+      wrap.appendChild(row);
+    });
+
+    procContainer.appendChild(wrap);
+  });
+
+  // click handlers
+  procContainer.querySelectorAll(".scale").forEach(scaleEl=>{
+    scaleEl.querySelectorAll("button").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const proc = scaleEl.dataset.proc;
+        const attr = scaleEl.dataset.attr;
+        const val  = btn.dataset.val;
+        answers[proc][attr] = val;
+
+        // active state
+        scaleEl.querySelectorAll("button").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+  });
+}
+
+btnHitung.addEventListener("click", ()=>{
+  const missing = countMissing();
+  if(missing>0){
+    alert(`Masih ada ${missing} atribut yang belum diisi. Mohon lengkapi dulu.`);
+    return;
+  }
+  results = computeAll(answers);
+  renderResults(results);
+  cardResult.style.display = "block";
+  window.scrollTo({top: cardResult.offsetTop - 80, behavior:"smooth"});
+});
+
+btnKembali.addEventListener("click", ()=>{
+  cardResult.style.display = "none";
+  window.scrollTo({top: cardSurvey.offsetTop - 80, behavior:"smooth"});
+});
+
+btnSubmit.addEventListener("click", async ()=>{
+  if(!respondent || !results){
+    alert("Data belum lengkap.");
+    return;
+  }
+
+  btnSubmit.disabled = true;
+  submitStatus.textContent = "Mengirim jawaban...";
+
+  try{
+    const payload = {
+      respondent,
+      answers,
+      results,
+      overall_level: results.overall.level,
+      overall_score: results.overall.score
+    };
+
+    const { error } = await supabase
+      .from("cobit_responses")
+      .insert(payload);
+
+    if(error) throw error;
+
+    submitStatus.textContent = "Berhasil terkirim. Terima kasih sudah mengisi kuesioner.";
+  }catch(err){
+    submitStatus.textContent = "Gagal mengirim: " + (err?.message || String(err));
+  }finally{
+    btnSubmit.disabled = false;
+  }
+});
+
+function countMissing(){
+  let miss = 0;
+  PROCESSES.forEach(p=>{
+    ATTRS.forEach(a=>{
+      if(!answers[p.code]?.[a.key]) miss++;
+    });
+  });
+  return miss;
+}
+
+function computeAll(answers){
+  const perProcess = PROCESSES.map(p=>{
+    const pa = answers[p.code];
+    const scored = {};
+    ATTRS.forEach(a=>{
+      const k = pa[a.key];
+      const sObj = SCALE.find(x=>x.k===k);
+      scored[a.key] = { grade:k, score:sObj.score };
+    });
+
+    const scoreAvg = avg(Object.values(scored).map(x=>x.score));
+    const level = capabilityLevel(scored);
+    return {
+      domain: p.domain,
+      code: p.code,
+      name: p.name,
+      attrs: scored,
+      score: round2(scoreAvg),
+      level,
+      summary: summarizePA(scored)
+    };
+  });
+
+  const overallScore = round2(avg(perProcess.map(x=>x.score)));
+  const overallLevel = Math.round(avg(perProcess.map(x=>x.level))); // ringkas
+  const byDomain = groupByDomain(perProcess);
+
+  return {
+    perProcess,
+    byDomain,
+    overall: { score: overallScore, level: overallLevel }
+  };
+}
+
+function groupByDomain(perProcess){
+  const map = {};
+  perProcess.forEach(p=>{
+    map[p.domain] = map[p.domain] || [];
+    map[p.domain].push(p);
+  });
+  return Object.entries(map).map(([domain, arr])=>{
+    return {
+      domain,
+      score: round2(avg(arr.map(x=>x.score))),
+      level: Math.round(avg(arr.map(x=>x.level)))
+    };
+  });
+}
+
+/**
+ * Aturan capability (umum dipakai di skripsi PAM):
+ * - Level 1 tercapai jika PA1.1 minimal L/F
+ * - Level 2 tercapai jika PA1.1 = F dan PA2.1 & PA2.2 minimal L/F
+ * - Level 3 tercapai jika PA1.1, PA2.1, PA2.2 = F dan PA3.1 & PA3.2 minimal L/F
+ * - dst...
+ */
+function capabilityLevel(scored){
+  const g = (k)=> scored[k].grade;
+
+  const isLF = (x)=> x==="L" || x==="F";
+  const isF  = (x)=> x==="F";
+
+  // level 0 default
+  if(!isLF(g("PA1_1"))) return 0;
+
+  // level 1
+  let level = 1;
+
+  // level 2
+  if(isF(g("PA1_1")) && isLF(g("PA2_1")) && isLF(g("PA2_2"))) level = 2;
+  else return level;
+
+  // level 3
+  if(isF(g("PA2_1")) && isF(g("PA2_2")) && isLF(g("PA3_1")) && isLF(g("PA3_2"))) level = 3;
+  else return level;
+
+  // level 4
+  if(isF(g("PA3_1")) && isF(g("PA3_2")) && isLF(g("PA4_1")) && isLF(g("PA4_2"))) level = 4;
+  else return level;
+
+  // level 5
+  if(isF(g("PA4_1")) && isF(g("PA4_2")) && isLF(g("PA5_1")) && isLF(g("PA5_2"))) level = 5;
+
+  return level;
+}
+
+function summarizePA(scored){
+  const pick = (k)=> scored[k].grade;
+  return `1.1:${pick("PA1_1")} 2.1:${pick("PA2_1")} 2.2:${pick("PA2_2")} 3.1:${pick("PA3_1")} 3.2:${pick("PA3_2")} 4.1:${pick("PA4_1")} 4.2:${pick("PA4_2")} 5.1:${pick("PA5_1")} 5.2:${pick("PA5_2")}`;
+}
+
+function renderResults(res){
+  document.getElementById("overallScore").value = res.overall.score;
+  document.getElementById("overallLevel").value = res.overall.level;
+
+  const tbody = document.querySelector("#tblResult tbody");
+  tbody.innerHTML = "";
+
+  res.perProcess.forEach(p=>{
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${p.domain}</td>
+      <td>${p.code}</td>
+      <td>${escapeHtml(p.name)}</td>
+      <td><strong>${p.level}</strong></td>
+      <td>${p.score}</td>
+      <td class="small">${escapeHtml(p.summary)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function avg(arr){ return arr.reduce((a,b)=>a+b,0)/arr.length; }
+function round2(n){ return Math.round(n*100)/100; }
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+</script>
+</body>
+</html>
