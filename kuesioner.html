@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kuesioner • Evaluasi POSPAY</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+  <script src="./config.js"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+  <div class="max-w-6xl mx-auto p-4 space-y-6">
+
+    <header class="bg-white border rounded-3xl p-5">
+      <div class="flex items-center gap-3">
+        <img src="posind.png" class="w-10 h-10 object-contain border rounded-xl bg-white" onerror="this.style.display='none'">
+        <div>
+          <div class="font-bold text-lg">Kuesioner Evaluasi Kinerja POSPAY (COBIT 5)</div>
+          <div class="text-sm text-gray-500">Skala 0–5 • Output: Maturity Level</div>
+        </div>
+      </div>
+
+      <nav class="mt-4 flex flex-wrap gap-2 text-sm">
+        <a href="./index.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Beranda</a>
+        <a href="./kuesioner.html" class="px-4 py-2 rounded-xl bg-gray-900 text-white font-semibold">Kuesioner</a>
+        <a href="./download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
+        <a href="./tentang.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Tentang</a>
+      </nav>
+    </header>
+
+    <section class="bg-white border rounded-3xl p-5">
+      <h2 class="font-semibold text-lg">Data Responden</h2>
+      <div class="mt-4 grid md:grid-cols-2 gap-3">
+        <input id="nama" class="border rounded-2xl px-3 py-2" placeholder="Nama" />
+        <input id="jabatan" class="border rounded-2xl px-3 py-2" placeholder="Jabatan" />
+        <input id="unit" class="border rounded-2xl px-3 py-2 md:col-span-2" value="PT Pos Indonesia (Persero) Cabang Rengat" />
+        <input id="tanggal" type="date" class="border rounded-2xl px-3 py-2" />
+      </div>
+    </section>
+
+    <section class="bg-white border rounded-3xl p-5">
+      <h2 class="font-semibold text-lg">Pertanyaan Kuesioner</h2>
+      <p class="text-sm text-gray-600 mt-1">Isi semua pertanyaan. Hasil maturity & grafik dihitung otomatis.</p>
+
+      <div id="questionContainer" class="mt-5 space-y-5"></div>
+
+      <div class="mt-6 grid md:grid-cols-3 gap-3">
+        <div class="border rounded-2xl p-4 bg-gray-50">
+          <div class="text-xs text-gray-500">Overall Maturity</div>
+          <div id="overallLevel" class="text-2xl font-bold">0.00</div>
+          <div id="overallText" class="text-sm text-gray-600 mt-1">-</div>
+        </div>
+        <div class="border rounded-2xl p-4 bg-gray-50">
+          <div class="text-xs text-gray-500">Total Pertanyaan</div>
+          <div id="totalQuestions" class="text-2xl font-bold">0</div>
+        </div>
+        <div class="border rounded-2xl p-4 bg-gray-50">
+          <div class="text-xs text-gray-500">Status</div>
+          <div id="statusBox" class="text-sm text-gray-700 mt-1">Belum disimpan</div>
+        </div>
+      </div>
+
+      <div class="mt-6 grid md:grid-cols-2 gap-4">
+        <div class="border rounded-3xl p-4">
+          <div class="font-semibold">Grafik per Domain</div>
+          <canvas id="domainChart" class="mt-3"></canvas>
+        </div>
+        <div class="border rounded-3xl p-4">
+          <div class="font-semibold">Grafik per Proses</div>
+          <canvas id="processChart" class="mt-3"></canvas>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3 items-center">
+        <button id="btnSave" class="px-5 py-3 rounded-2xl bg-gray-900 text-white font-semibold">
+          Simpan Jawaban
+        </button>
+        <span id="saveMsg" class="text-sm text-gray-700"></span>
+      </div>
+    </section>
+  </div>
+
+  <!-- THANK YOU OVERLAY -->
+  <div id="thankOverlay" class="hidden fixed inset-0 bg-black/50 p-4">
+    <div class="max-w-lg mx-auto mt-20 bg-white rounded-3xl border p-6">
+      <div class="text-xl font-bold">Terima kasih</div>
+      <p class="mt-2 text-sm text-gray-700">
+        Jawaban Anda sudah berhasil disimpan. Terima kasih telah berpartisipasi dalam pengisian kuesioner.
+      </p>
+      <div class="mt-5 flex gap-2">
+        <a href="./index.html" class="px-5 py-3 rounded-2xl bg-gray-900 text-white font-semibold">
+          Kembali ke Beranda
+        </a>
+        <button id="btnCloseThanks" class="px-5 py-3 rounded-2xl border bg-white font-semibold">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <py-config>
+packages = []
+  </py-config>
+
+  <py-script src="./app.py"></py-script>
+
+  <py-script>
+from js import document, window
+import json
+from datetime import datetime
+
+document.getElementById("tanggal").value = datetime.now().strftime("%Y-%m-%d")
+
+def make_select(qid):
+    sel = document.createElement("select")
+    sel.id = qid
+    sel.className = "border rounded-2xl px-3 py-2 w-full bg-white"
+    opt0 = document.createElement("option")
+    opt0.value = ""
+    opt0.text = "Pilih nilai 0–5"
+    opt0.disabled = True
+    opt0.selected = True
+    sel.appendChild(opt0)
+    for v,label in [(0,"0 - Incomplete"),(1,"1 - Performed"),(2,"2 - Managed"),(3,"3 - Established"),(4,"4 - Predictable"),(5,"5 - Optimizing")]:
+        o = document.createElement("option")
+        o.value = str(v)
+        o.text = label
+        sel.appendChild(o)
+    return sel
+
+container = document.getElementById("questionContainer")
+for proc in SELECTED_PROCESSES:
+    block = document.createElement("div")
+    block.className = "border rounded-3xl p-4 bg-gray-50"
+    title = document.createElement("div")
+    title.className = "font-bold"
+    title.textContent = f"{proc['processKey']} • {proc['processName']} ({proc['domain']})"
+    block.appendChild(title)
+
+    for idx, q in enumerate(proc["questions"], start=1):
+        row = document.createElement("div")
+        row.className = "mt-3 grid md:grid-cols-[1fr_260px] gap-3 items-start"
+        left = document.createElement("div")
+        left.className = "border rounded-2xl p-3 bg-white"
+        left.innerHTML = f"<div class='font-semibold text-sm'>{idx}. {q['text']}</div><div class='text-xs text-gray-500 mt-1'>Kode: {q['id']}</div>"
+        row.appendChild(left)
+        sel = make_select(q["id"])
+        row.appendChild(sel)
+        block.appendChild(row)
+
+    container.appendChild(block)
+
+domainChart = None
+processChart = None
+
+def collect_answers():
+    ans = {}
+    for proc in SELECTED_PROCESSES:
+        for q in proc["questions"]:
+            val = document.getElementById(q["id"]).value
+            if val == "":
+                return None
+            ans[q["id"]] = int(val)
+    return ans
+
+def update_charts(res):
+    global domainChart, processChart
+
+    d_keys = list(res["perDomain"].keys())
+    d_vals = [res["perDomain"][k]["average"] for k in d_keys]
+
+    p_keys = list(res["perProcess"].keys())
+    p_vals = [res["perProcess"][k]["average"] for k in p_keys]
+
+    document.getElementById("overallLevel").textContent = str(res["overallLevel"])
+    document.getElementById("overallText").textContent  = res["overallText"]
+    document.getElementById("totalQuestions").textContent = str(res["totalQuestions"])
+
+    Chart = window.Chart
+
+    if domainChart is None:
+        ctx = document.getElementById("domainChart")
+        domainChart = Chart.new(ctx, {
+            "type": "bar",
+            "data": {"labels": d_keys, "datasets": [{"label": "Maturity (0–5)", "data": d_vals}]},
+            "options": {"scales": {"y": {"min": 0, "max": 5, "ticks": {"stepSize": 1}}}}
+        })
+    else:
+        domainChart.data.labels = d_keys
+        domainChart.data.datasets[0].data = d_vals
+        domainChart.update()
+
+    if processChart is None:
+        ctx2 = document.getElementById("processChart")
+        processChart = Chart.new(ctx2, {
+            "type": "bar",
+            "data": {"labels": p_keys, "datasets": [{"label": "Maturity (0–5)", "data": p_vals}]},
+            "options": {"scales": {"y": {"min": 0, "max": 5, "ticks": {"stepSize": 1}}}}
+        })
+    else:
+        processChart.data.labels = p_keys
+        processChart.data.datasets[0].data = p_vals
+        processChart.update()
+
+def recalc(_evt=None):
+    ans = collect_answers()
+    if ans is None:
+        return
+    res = compute_results(ans)
+    update_charts(res)
+
+for proc in SELECTED_PROCESSES:
+    for q in proc["questions"]:
+        document.getElementById(q["id"]).addEventListener("change", recalc)
+
+def show_thanks():
+    document.getElementById("thankOverlay").classList.remove("hidden")
+
+def hide_thanks(_evt=None):
+    document.getElementById("thankOverlay").classList.add("hidden")
+
+document.getElementById("btnCloseThanks").addEventListener("click", hide_thanks)
+
+async def save_to_supabase(_evt=None):
+    cfg = window.APP_CONFIG
+    url = cfg["SUPABASE_URL"].rstrip("/")
+    key = cfg["SUPABASE_ANON_KEY"]
+
+    nama = document.getElementById("nama").value.strip()
+    jabatan = document.getElementById("jabatan").value.strip()
+    unit = document.getElementById("unit").value.strip()
+    tanggal = document.getElementById("tanggal").value
+
+    if not nama or not jabatan:
+        document.getElementById("saveMsg").textContent = "Nama dan jabatan wajib diisi."
+        return
+
+    ans = collect_answers()
+    if ans is None:
+        document.getElementById("saveMsg").textContent = "Semua pertanyaan wajib dijawab."
+        return
+
+    res = compute_results(ans)
+
+    payload = {
+        "respondent": {"nama": nama, "jabatan": jabatan, "unit": unit, "tanggal": tanggal},
+        "answers": ans,
+        "results": {"perDomain": res["perDomain"], "perProcess": res["perProcess"], "totalQuestions": res["totalQuestions"]},
+        "overall_level": res["overallLevel"],
+    }
+
+    headers = {
+        "apikey": key,
+        "Authorization": "Bearer " + key,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+
+    document.getElementById("btnSave").disabled = True
+    document.getElementById("saveMsg").textContent = "Menyimpan..."
+
+    fetch = window.fetch
+    resp = await fetch(url + "/rest/v1/cobit_responses", {
+        "method": "POST",
+        "headers": headers,
+        "body": json.dumps(payload),
+    })
+    txt = await resp.text()
+
+    document.getElementById("btnSave").disabled = False
+
+    if not resp.ok:
+        document.getElementById("saveMsg").textContent = "Gagal menyimpan: " + txt
+        return
+
+    document.getElementById("saveMsg").textContent = "Berhasil disimpan."
+    document.getElementById("statusBox").textContent = "Tersimpan"
+
+    # tampilkan modal terima kasih
+    show_thanks()
+
+document.getElementById("btnSave").addEventListener("click", save_to_supabase)
+  </py-script>
+</body>
+</html>

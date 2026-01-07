@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Beranda • Kuesioner Evaluasi POSPAY</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+  <div class="max-w-6xl mx-auto p-4 space-y-6">
+    <header class="bg-white border rounded-3xl p-5">
+      <div class="flex items-center gap-3">
+        <img src="posind.png" class="w-10 h-10 object-contain border rounded-xl bg-white" onerror="this.style.display='none'">
+        <div class="min-w-0">
+          <div class="font-bold text-lg truncate">Kuesioner Evaluasi Kinerja Aplikasi POSPAY (COBIT 5)</div>
+          <div class="text-sm text-gray-500 truncate">PT Pos Indonesia (Persero) • Cabang Rengat</div>
+        </div>
+      </div>
+
+      <nav class="mt-4 flex flex-wrap gap-2 text-sm">
+        <a href="./index.html" class="px-4 py-2 rounded-xl bg-gray-900 text-white font-semibold">Beranda</a>
+        <a href="./kuesioner.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Kuesioner</a>
+        <a href="./download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
+        <a href="./tentang.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Tentang</a>
+      </nav>
+    </header>
+
+    <section class="bg-white border rounded-3xl p-6 space-y-4">
+      <h1 class="text-2xl font-bold">Beranda</h1>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="rounded-3xl border bg-gray-50 p-5">
+          <div class="font-bold">Tujuan Pengisian</div>
+          <p class="mt-2 text-sm text-gray-700">
+            Kuesioner ini digunakan untuk mengevaluasi kinerja aplikasi POSPAY menggunakan framework COBIT 5.
+            Hasil pengisian akan diolah menjadi tingkat kematangan (maturity level) skala 0–5 pada proses terpilih:
+            APO12, DSS01, DSS02, DSS03, dan MEA01.
+          </p>
+        </div>
+
+        <div class="rounded-3xl border bg-gray-50 p-5">
+          <div class="font-bold">Petunjuk Singkat</div>
+          <ul class="mt-2 text-sm text-gray-700 list-disc pl-5 space-y-1">
+            <li>Isi data responden secara benar (nama & jabatan wajib diisi).</li>
+            <li>Jawab seluruh pertanyaan dengan skala 0–5 sesuai kondisi yang ada.</li>
+            <li>Hasil maturity dan grafik akan muncul otomatis di halaman kuesioner.</li>
+            <li>Tekan tombol <b>Simpan Jawaban</b> untuk mengirim data ke database.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-4 pt-2">
+        <a href="./kuesioner.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
+          <div class="text-lg font-bold">Isi Kuesioner</div>
+          <div class="mt-1 text-sm text-gray-600">Halaman pengisian pertanyaan dan perhitungan maturity level.</div>
+        </a>
+
+        <a href="./download.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
+          <div class="text-lg font-bold">Download POSPAY</div>
+          <div class="mt-1 text-sm text-gray-600">Tautan resmi unduhan aplikasi (Android & iPhone).</div>
+        </a>
+
+        <a href="./tentang.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
+          <div class="text-lg font-bold">Tentang & FAQ</div>
+          <div class="mt-1 text-sm text-gray-600">Informasi POSPAY, FAQ, dan kontak peneliti.</div>
+        </a>
+      </div>
+    </section>
+
+    <footer class="text-center text-xs text-gray-500 py-6">
+      Halaman responden: Beranda • Kuesioner • Download • Tentang
+    </footer>
+  </div>
+</body>
+</html>
