@@ -342,7 +342,7 @@ async function saveEdit() {
   const res = await fetch(patchUrl, {
     method: "PATCH",
     headers: {
-      "apikey": SUPABASE_ANON_KEY,
+      "apikey": eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamFsaWlqcnF0aHpvYWlpdXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4MjYxNzksImV4cCI6MjA4MzQwMjE3OX0.C9nIUYQNUMOepSJdSxOjyJwF_4gBOaMZo1kqH8XO9E4,
       "Authorization": `Bearer ${accessToken}`,
       "Content-Type": "application/json",
       "Prefer": "return=representation",
@@ -375,7 +375,7 @@ async function deleteRow() {
   const res = await fetch(delUrl, {
     method: "DELETE",
     headers: {
-      "apikey": SUPABASE_ANON_KEY,
+      "apikey":eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamFsaWlqcnF0aHpvYWlpdXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc4MjYxNzksImV4cCI6MjA4MzQwMjE3OX0.C9nIUYQNUMOepSJdSxOjyJwF_4gBOaMZo1kqH8XO9E4,
       "Authorization": `Bearer ${accessToken}`,
     },
   });
