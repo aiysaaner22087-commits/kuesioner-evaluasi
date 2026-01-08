@@ -9,104 +9,178 @@
 
 <body class="bg-gray-50 text-gray-900">
   <div class="max-w-6xl mx-auto p-4 space-y-6">
+    <!-- HEADER + NAV -->
     <header class="bg-white border rounded-3xl p-5">
       <div class="flex items-center gap-3">
         <img src="posind.png" class="w-10 h-10 object-contain border rounded-xl bg-white" onerror="this.style.display='none'">
-        <div>
-          <div class="font-bold text-lg">Tentang POSPAY</div>
-          <div class="text-sm text-gray-500">Informasi • FAQ • Kontak Peneliti</div>
+        <div class="min-w-0">
+          <div class="font-bold text-lg truncate">Tentang Aplikasi POSPAY</div>
+          <div class="text-sm text-gray-500 truncate">Informasi • Fitur • FAQ • Kontak Peneliti</div>
         </div>
       </div>
 
       <nav class="mt-4 flex flex-wrap gap-2 text-sm">
-        <a href="./index.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Beranda</a>
-        <a href="./kuesioner.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Kuesioner</a>
-        <a href="./download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
-        <a href="./tentang.html" class="px-4 py-2 rounded-xl bg-gray-900 text-white font-semibold">Tentang</a>
+        <a href="program/index.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Beranda</a>
+        <a href="program/kuesioner.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Kuesioner</a>
+        <a href="program/download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
+        <a href="program/tentang.html" class="px-4 py-2 rounded-xl bg-gray-900 text-white font-semibold">Tentang</a>
       </nav>
     </header>
 
-    <section class="bg-white border rounded-3xl p-6 space-y-3">
-      <h1 class="text-2xl font-bold">Tentang Aplikasi POSPAY</h1>
+    <!-- TENTANG POSPAY -->
+    <section class="bg-white border rounded-3xl p-6 space-y-4">
+      <h1 class="text-2xl font-bold">Apa itu POSPAY?</h1>
       <p class="text-sm text-gray-700">
-        POSPAY adalah aplikasi layanan pembayaran dari Pos Indonesia yang membantu pengguna melakukan transaksi pembayaran
-        dan layanan digital melalui perangkat mobile.
+        POSPAY merupakan platform layanan transaksi keuangan dari PT Pos Indonesia (Persero) yang dapat diakses melalui perangkat mobile.
+        POSPAY dikembangkan untuk memudahkan masyarakat melakukan transaksi dan pembayaran kapan saja dan di mana saja,
+        serta melengkapi jaringan layanan Pos Indonesia yang sudah tersedia di berbagai titik layanan.
       </p>
 
-      <h2 class="text-lg font-bold mt-4">Konteks Penelitian</h2>
-      <p class="text-sm text-gray-700">
-        Penelitian ini mengevaluasi kinerja aplikasi POSPAY pada PT Pos Indonesia (Persero) Cabang Rengat menggunakan framework COBIT 5.
-        Kuesioner difokuskan pada proses APO12, DSS01, DSS02, DSS03, dan MEA01 untuk menghasilkan maturity level (0–5).
-      </p>
+      <div class="grid md:grid-cols-2 gap-4 pt-2">
+        <div class="rounded-3xl border bg-gray-50 p-5">
+          <div class="font-bold">Karakteristik Umum</div>
+          <ul class="mt-2 text-sm text-gray-700 list-disc pl-5 space-y-1">
+            <li>Aplikasi mobile untuk transaksi keuangan dan pembayaran.</li>
+            <li>Mendukung berbagai jenis pembayaran/tagihan dan layanan keuangan.</li>
+            <li>Terhubung dengan ekosistem layanan Pos Indonesia.</li>
+          </ul>
+        </div>
+
+        <div class="rounded-3xl border bg-gray-50 p-5">
+          <div class="font-bold">Contoh Layanan di POSPAY</div>
+          <ul class="mt-2 text-sm text-gray-700 list-disc pl-5 space-y-1">
+            <li>Pembayaran tagihan (misalnya listrik/PDAM/BPJS dan sejenisnya tergantung ketersediaan layanan).</li>
+            <li>Pembelian produk digital (misalnya pulsa/token listrik dan sejenisnya).</li>
+            <li>Pengiriman uang melalui layanan Pos (misalnya fitur kirim uang yang tersedia di aplikasi).</li>
+            <li>Pembayaran dengan QR/QR Code (jika tersedia pada versi aplikasi yang digunakan).</li>
+          </ul>
+          <p class="mt-2 text-xs text-gray-500">
+            Catatan: detail menu/fitur bisa berbeda sesuai versi aplikasi dan kebijakan layanan yang berlaku.
+          </p>
+        </div>
+      </div>
 
       <div class="pt-2 flex flex-wrap gap-3">
-        <a href="kuesioner.html" class="px-5 py-3 rounded-2xl bg-gray-900 text-white font-semibold">Isi Kuesioner</a>
-        <a href="download.html" class="px-5 py-3 rounded-2xl border bg-white font-semibold">Download POSPAY</a>
+        <a href="./download.html" class="px-5 py-3 rounded-2xl bg-gray-900 text-white font-semibold">
+          Lihat Halaman Download POSPAY
+        </a>
+        <a href="./kuesioner.html" class="px-5 py-3 rounded-2xl border bg-white font-semibold">
+          Isi Kuesioner
+        </a>
       </div>
     </section>
 
+    <!-- KONTEKS PENELITIAN -->
+    <section class="bg-white border rounded-3xl p-6 space-y-3">
+      <h2 class="text-xl font-bold">Konteks Penelitian</h2>
+      <p class="text-sm text-gray-700">
+        Penelitian ini berjudul <b>“Evaluasi Kinerja Aplikasi POSPAY PT. Pos Indonesia (Persero) Menggunakan Framework COBIT 5” (Studi Kasus: PT. Indonesia (Persero) Cabang Rengat)</b>.
+        Pengukuran dilakukan melalui kuesioner untuk menghasilkan tingkat kematangan (maturity level) pada proses COBIT 5 yang dipilih.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-4 pt-2">
+        <div class="rounded-3xl border bg-gray-50 p-5">
+          <div class="font-bold">Domain</div>
+          <div class="mt-2 text-sm text-gray-700">APO, DSS, MEA</div>
+        </div>
+        <div class="rounded-3xl border bg-gray-50 p-5">
+          <div class="font-bold">Proses Terpilih</div>
+          <div class="mt-2 text-sm text-gray-700">APO12, DSS01, DSS02, DSS03, MEA01</div>
+        </div>
+        <div class="rounded-3xl border bg-gray-50 p-5">
+          <div class="font-bold">Output</div>
+          <div class="mt-2 text-sm text-gray-700">Maturity Level skala 0–5 + grafik</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
     <section class="bg-white border rounded-3xl p-6">
       <h2 class="text-xl font-bold">FAQ</h2>
+
       <div class="mt-4 space-y-3">
         <details class="rounded-2xl border bg-gray-50 p-4">
-          <summary class="font-semibold cursor-pointer">Apakah jawaban saya bersifat rahasia?</summary>
+          <summary class="font-semibold cursor-pointer">Apakah data responden aman?</summary>
           <p class="mt-2 text-sm text-gray-700">
-            Ya, data digunakan untuk keperluan penelitian evaluasi kinerja aplikasi POSPAY. Akses data hasil dibatasi untuk admin/peneliti.
+            Data digunakan untuk kepentingan penelitian dan akses hasil dibatasi untuk admin/peneliti.
           </p>
         </details>
 
         <details class="rounded-2xl border bg-gray-50 p-4">
-          <summary class="font-semibold cursor-pointer">Bagaimana cara memilih nilai skala 0–5?</summary>
+          <summary class="font-semibold cursor-pointer">Bagaimana cara memilih skala 0–5?</summary>
           <p class="mt-2 text-sm text-gray-700">
-            Pilih nilai berdasarkan tingkat penerapan/kematangan kondisi yang ada. Nilai 0 berarti tidak berjalan,
-            sedangkan 5 berarti berjalan optimal dan dilakukan perbaikan berkelanjutan.
+            Pilih nilai berdasarkan kondisi penerapan yang paling sesuai. Nilai 0 menunjukkan tidak berjalan,
+            sedangkan nilai 5 menunjukkan berjalan optimal dan dilakukan perbaikan berkelanjutan.
           </p>
         </details>
 
         <details class="rounded-2xl border bg-gray-50 p-4">
-          <summary class="font-semibold cursor-pointer">Apakah saya wajib menjawab semua pertanyaan?</summary>
+          <summary class="font-semibold cursor-pointer">Apakah semua pertanyaan wajib diisi?</summary>
           <p class="mt-2 text-sm text-gray-700">
             Ya. Sistem hanya bisa menghitung maturity level dan menyimpan data jika seluruh pertanyaan terisi.
           </p>
         </details>
 
         <details class="rounded-2xl border bg-gray-50 p-4">
-          <summary class="font-semibold cursor-pointer">Saya mengalami kendala saat mengisi, harus bagaimana?</summary>
+          <summary class="font-semibold cursor-pointer">Fitur POSPAY kok beda dengan yang saya lihat?</summary>
           <p class="mt-2 text-sm text-gray-700">
-            Silakan hubungi kontak peneliti di bagian “Kontak Peneliti”.
+            Tampilan dan fitur bisa berubah mengikuti versi aplikasi, pembaruan, serta kebijakan layanan. Gunakan kondisi yang Anda ketahui saat ini.
+          </p>
+        </details>
+
+        <details class="rounded-2xl border bg-gray-50 p-4">
+          <summary class="font-semibold cursor-pointer">Saya mengalami kendala saat pengisian kuesioner</summary>
+          <p class="mt-2 text-sm text-gray-700">
+            Silakan hubungi Kontak Peneliti di bawah untuk bantuan.
           </p>
         </details>
       </div>
     </section>
 
+    <!-- KONTAK PENELITI (TANPA EMAIL, NO HP KLIK) -->
     <section class="bg-white border rounded-3xl p-6">
       <h2 class="text-xl font-bold">Kontak Peneliti</h2>
-      <p class="mt-2 text-sm text-gray-700">Berikut identitas peneliti yang dapat dihubungi:</p>
+      <p class="mt-2 text-sm text-gray-700">
+        Jika ada pertanyaan atau kendala teknis, silakan hubungi peneliti melalui kontak berikut.
+      </p>
 
       <div class="mt-4 grid md:grid-cols-2 gap-4">
         <div class="rounded-3xl border bg-gray-50 p-5">
           <div class="text-xs text-gray-500">Nama Peneliti</div>
-          <div class="font-semibold">Aiysa Aner</div>
+          <div class="font-semibold">AIYSA ANER</div>
 
-          <div class="mt-3 text-xs text-gray-500">Email</div>
-          <div class="font-semibold">aiysaaner9@gmail.com</div>
+          <div class="mt-3 text-xs text-gray-500">Nomor Telepon / WhatsApp</div>
+            <a href="https://wa.me/6281268246637" target="_blank" rel="noreferrer"
+   class="inline-flex mt-2 items-center gap-2 font-semibold underline">
+  Chat WhatsApp
 
-          <div class="mt-3 text-xs text-gray-500">No. WhatsApp</div>
-          <div class="font-semibold">0812-6824-6637</div>
+
+          </a>
+
+          <div class="mt-3 text-xs text-gray-500">KAMPUS</div>
+          <div class="font-semibold">UNIVERSITAS PUTRA INDONESIA "YPTK" PADANG</div>
         </div>
 
         <div class="rounded-3xl border bg-gray-50 p-5">
-          <div class="text-xs text-gray-500">Institusi</div>
-          <div class="font-semibold">UNIVERSITAS PUTRA INDONESIA "YPTK" PADANG</div>
+          <div class="text-xs text-gray-500">Objek Penelitian</div>
+          <div class="font-semibold">PT. Pos Indonesia (Persero) Cabang Rengat</div>
 
           <div class="mt-3 text-xs text-gray-500">Judul Penelitian</div>
           <div class="text-sm font-semibold">
-            Evaluasi Kinerja Aplikasi POSPAY PT. Pos Indonesia (Persero) Menggunakan Framework COBIT 5
-            (Studi Kasus: PT. POS Indonesia (Persero) Cabang Rengat)
+            Evaluasi Kinerja Aplikasi POSPAY PT. Pos Indonesia (Persero) Menggunakan Framework COBIT 5 (Studi Kasus: PT. Indonesia (Persero) Cabang Rengat)
+          </div>
+
+          <div class="mt-3 text-xs text-gray-500">Catatan</div>
+          <div class="text-sm text-gray-700">
+            Mohon cantumkan nama/jabatan saat menghubungi agar ditindak lanjut lebih cepat.
           </div>
         </div>
       </div>
     </section>
+
+    <footer class="text-center text-xs text-gray-500 py-6">
+      © AIYSA ANER 2026 • Halaman Tentang
+    </footer>
   </div>
 </body>
 </html>

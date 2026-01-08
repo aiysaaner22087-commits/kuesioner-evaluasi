@@ -15,11 +15,9 @@
     <header class="bg-white border rounded-3xl p-5 flex items-center justify-between gap-3">
       <div>
         <div class="font-bold text-lg">Admin • Hasil Kuesioner Evaluasi POSPAY</div>
-        <div class="text-sm text-gray-500">Login Supabase Auth • Grafik • Tabel • Detail • Export</div>
+        <div class="text-sm text-gray-500">Login • Statistik • Grafik • Tabel • Detail • Edit/Hapus • Export</div>
       </div>
-      <a href="./index.html" class="text-sm font-semibold px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">
-        Beranda
-      </a>
+      <a href="./index.html" class="text-sm font-semibold px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Beranda</a>
     </header>
 
     <!-- LOGIN -->
@@ -33,34 +31,33 @@
       <div id="loginMsg" class="mt-3 text-sm text-gray-700"></div>
     </section>
 
-    <!-- ACTIONS -->
+    <!-- ACTIONS + STATS -->
     <section class="bg-white border rounded-3xl p-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div class="font-semibold">Kontrol Data</div>
-          <div class="text-sm text-gray-500">Klik refresh untuk memuat data terbaru (maks 500 data).</div>
+          <div class="text-sm text-gray-500">Refresh untuk memuat data terbaru (maks 500).</div>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button id="btnRefresh" class="rounded-xl border bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-100">
-            Refresh
-          </button>
-          <button id="btnCSV" class="rounded-xl bg-gray-900 text-white px-3 py-2 text-sm font-semibold hover:opacity-95">
-            Export CSV
-          </button>
-          <button id="btnLogout" class="rounded-xl border bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-100">
-            Logout
-          </button>
+          <button id="btnRefresh" class="rounded-xl border bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-100">Refresh</button>
+          <button id="btnCSVSummary" class="rounded-xl border bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-100">Export CSV (Ringkas)</button>
+          <button id="btnCSVDetail" class="rounded-xl bg-gray-900 text-white px-3 py-2 text-sm font-semibold hover:opacity-95">Export CSV (Detail)</button>
+          <button id="btnLogout" class="rounded-xl border bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-100">Logout</button>
         </div>
       </div>
 
-      <div class="mt-4 grid md:grid-cols-3 gap-3">
+      <div class="mt-4 grid md:grid-cols-4 gap-3">
         <div class="border rounded-2xl p-4 bg-gray-50">
           <div class="text-xs text-gray-500">Jumlah Responden</div>
           <div id="statCount" class="text-2xl font-bold">0</div>
         </div>
         <div class="border rounded-2xl p-4 bg-gray-50">
-          <div class="text-xs text-gray-500">Rata-rata Overall Maturity</div>
+          <div class="text-xs text-gray-500">Rata-rata Overall</div>
           <div id="statOverall" class="text-2xl font-bold">0.00</div>
+        </div>
+        <div class="border rounded-2xl p-4 bg-gray-50">
+          <div class="text-xs text-gray-500">Median Overall</div>
+          <div id="statMedian" class="text-2xl font-bold">0.00</div>
         </div>
         <div class="border rounded-2xl p-4 bg-gray-50">
           <div class="text-xs text-gray-500">Status</div>
@@ -69,16 +66,23 @@
       </div>
     </section>
 
-    <!-- CHARTS AGGREGATE -->
+    <!-- DISTRIBUTION + AGG CHARTS -->
     <section class="bg-white border rounded-3xl p-5">
-      <h2 class="font-semibold text-lg">Grafik Agregat (Rata-rata dari Semua Responden)</h2>
-      <div class="mt-4 grid md:grid-cols-2 gap-4">
+      <h2 class="font-semibold text-lg">Grafik Ringkasan</h2>
+
+      <div class="mt-4 grid md:grid-cols-3 gap-4">
         <div class="border rounded-3xl p-4">
-          <div class="font-semibold">Maturity per Domain</div>
+          <div class="font-semibold">Distribusi Level (0–5)</div>
+          <canvas id="levelChart" class="mt-3"></canvas>
+        </div>
+
+        <div class="border rounded-3xl p-4 md:col-span-2">
+          <div class="font-semibold">Maturity Agregat per Domain (rata-rata)</div>
           <canvas id="aggDomainChart" class="mt-3"></canvas>
         </div>
-        <div class="border rounded-3xl p-4">
-          <div class="font-semibold">Maturity per Proses</div>
+
+        <div class="border rounded-3xl p-4 md:col-span-3">
+          <div class="font-semibold">Maturity Agregat per Proses (rata-rata)</div>
           <canvas id="aggProcessChart" class="mt-3"></canvas>
         </div>
       </div>
@@ -89,7 +93,7 @@
       <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 class="font-semibold text-lg">Tabel Responden</h2>
-          <div class="text-sm text-gray-500">Klik baris untuk melihat detail (grafik + jawaban).</div>
+          <div class="text-sm text-gray-500">Klik baris untuk detail. Tombol edit/hapus ada di panel detail.</div>
         </div>
         <div class="flex items-center gap-2">
           <input id="search" class="border rounded-2xl px-3 py-2 text-sm" placeholder="Cari nama/jabatan..." />
@@ -103,7 +107,9 @@
               <th class="text-left p-3">Waktu</th>
               <th class="text-left p-3">Nama</th>
               <th class="text-left p-3">Jabatan</th>
+              <th class="text-left p-3">Unit</th>
               <th class="text-left p-3">Overall</th>
+              <th class="text-left p-3">Level</th>
               <th class="text-left p-3">APO</th>
               <th class="text-left p-3">DSS</th>
               <th class="text-left p-3">MEA</th>
@@ -114,32 +120,72 @@
       </div>
     </section>
 
-    <!-- DETAIL -->
+    <!-- DETAIL + EDIT -->
     <section class="bg-white border rounded-3xl p-5">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 class="font-semibold text-lg">Detail Responden</h2>
           <div id="detailMeta" class="text-sm text-gray-600 mt-1">Pilih responden dari tabel untuk melihat detail.</div>
         </div>
-        <button id="btnClearDetail" class="rounded-xl border bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-100">
-          Bersihkan Detail
-        </button>
+        <div class="flex gap-2">
+          <button id="btnClearDetail" class="rounded-xl border bg-white px-3 py-2 text-sm font-semibold hover:bg-gray-100">Bersihkan</button>
+          <button id="btnDelete" class="rounded-xl bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:opacity-95" disabled>Hapus</button>
+        </div>
+      </div>
+
+      <div class="mt-4 grid md:grid-cols-3 gap-4">
+        <div class="border rounded-3xl p-4 bg-gray-50">
+          <div class="text-xs text-gray-500">Overall Maturity</div>
+          <div id="detailOverall" class="text-2xl font-bold">-</div>
+          <div id="detailLevelText" class="text-sm text-gray-700 mt-1">-</div>
+        </div>
+        <div class="border rounded-3xl p-4 bg-gray-50">
+          <div class="text-xs text-gray-500">APO / DSS / MEA</div>
+          <div id="detailDomainNums" class="text-sm font-semibold mt-2">-</div>
+        </div>
+        <div class="border rounded-3xl p-4 bg-gray-50">
+          <div class="text-xs text-gray-500">Identitas</div>
+          <div id="detailIdentity" class="text-sm mt-2">-</div>
+        </div>
       </div>
 
       <div class="mt-4 grid md:grid-cols-2 gap-4">
         <div class="border rounded-3xl p-4">
-          <div class="font-semibold">Grafik Domain (Responden Terpilih)</div>
+          <div class="font-semibold">Grafik Domain (Responden)</div>
           <canvas id="detailDomainChart" class="mt-3"></canvas>
         </div>
         <div class="border rounded-3xl p-4">
-          <div class="font-semibold">Grafik Proses (Responden Terpilih)</div>
+          <div class="font-semibold">Grafik Proses (Responden)</div>
           <canvas id="detailProcessChart" class="mt-3"></canvas>
         </div>
       </div>
 
-      <div class="mt-4 border rounded-3xl p-4 bg-gray-50">
-        <div class="font-semibold">Jawaban (JSON)</div>
-        <pre id="detailAnswers" class="mt-2 text-xs overflow-auto">-</pre>
+      <div class="mt-4 grid md:grid-cols-2 gap-4">
+        <div class="border rounded-3xl p-4 bg-gray-50">
+          <div class="font-semibold">Edit Identitas Responden</div>
+          <div class="mt-3 grid gap-2">
+            <input id="editNama" class="border rounded-2xl px-3 py-2 text-sm bg-white" placeholder="Nama" />
+            <input id="editJabatan" class="border rounded-2xl px-3 py-2 text-sm bg-white" placeholder="Jabatan" />
+            <input id="editUnit" class="border rounded-2xl px-3 py-2 text-sm bg-white" placeholder="Unit" />
+            <input id="editTanggal" type="date" class="border rounded-2xl px-3 py-2 text-sm bg-white" />
+          </div>
+
+          <div class="mt-3 flex gap-2">
+            <button id="btnSaveEdit" class="rounded-xl bg-gray-900 text-white px-3 py-2 text-sm font-semibold hover:opacity-95" disabled>
+              Simpan Perubahan
+            </button>
+            <div id="editMsg" class="text-sm text-gray-700 self-center"></div>
+          </div>
+
+          <p class="mt-3 text-xs text-gray-500">
+            Edit hanya mengubah identitas (respondent JSON). Nilai maturity & jawaban tetap sama.
+          </p>
+        </div>
+
+        <div class="border rounded-3xl p-4 bg-gray-50">
+          <div class="font-semibold">Jawaban Kuesioner (JSON)</div>
+          <pre id="detailAnswers" class="mt-2 text-xs overflow-auto max-h-72">-</pre>
+        </div>
       </div>
     </section>
   </div>
