@@ -11,28 +11,37 @@
   <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
   <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
 
-  <script src="program/config.js"></script>
+  <script src="config.js"></script>
 </head>
 
 <body class="bg-gray-50 text-gray-900">
   <div class="max-w-6xl mx-auto p-4 space-y-6">
 
-    <header class="bg-white border rounded-3xl p-5">
-      <div class="flex items-center gap-3">
-        <img src="posind.png" class="w-10 h-10 object-contain border rounded-xl bg-white" onerror="this.style.display='none'">
-        <div>
-          <div class="font-bold text-lg">Kuesioner Evaluasi Kinerja POSPAY (COBIT 5)</div>
-          <div class="text-sm text-gray-500">Skala 0–5 • Output: Maturity Level</div>
-        </div>
+<header class="bg-white border rounded-3xl p-5">
+  <div class="flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-12 h-12 rounded-2xl border bg-white p-2 shadow-sm">
+        <img src="pospay.png" alt="Logo POSPAY" class="w-full h-full object-contain" />
       </div>
+      <div class="min-w-0">
+        <div class="font-extrabold text-lg truncate">Kuesioner Evaluasi POSPAY (COBIT 5)</div>
+        <div class="text-sm text-gray-500 truncate">PT Pos Indonesia (Persero) • Cabang Rengat</div>
+      </div>
+    </div>
 
-      <nav class="mt-4 flex flex-wrap gap-2 text-sm">
-        <a href="program/index.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Beranda</a>
-        <a href="program/kuesioner.html" class="px-4 py-2 rounded-xl bg-gray-900 text-white font-semibold">Kuesioner</a>
-        <a href="program/download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
-        <a href="program/tentang.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Tentang</a>
-      </nav>
-    </header>
+    <div class="w-10 h-10 rounded-2xl border bg-white p-2 shadow-sm hidden sm:block">
+      <img src="posind.png" alt="Logo Pos Indonesia" class="w-full h-full object-contain" />
+    </div>
+  </div>
+
+  <nav class="mt-4 flex flex-wrap gap-2 text-sm">
+    <a href="index.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Beranda</a>
+    <a href="kuesioner.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Kuesioner</a>
+    <a href="download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
+    <a href="tentang.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Tentang</a>
+  </nav>
+</header>
+
 
     <section class="bg-white border rounded-3xl p-5">
       <h2 class="font-semibold text-lg">Data Responden</h2>
@@ -94,7 +103,7 @@
         Jawaban Anda sudah berhasil disimpan. Terima kasih telah berpartisipasi dalam pengisian kuesioner.
       </p>
       <div class="mt-5 flex gap-2">
-        <a href="program/index.html" class="px-5 py-3 rounded-2xl bg-gray-900 text-white font-semibold">
+        <a href="index.html" class="px-5 py-3 rounded-2xl bg-gray-900 text-white font-semibold">
           Kembali ke Beranda
         </a>
         <button id="btnCloseThanks" class="px-5 py-3 rounded-2xl border bg-white font-semibold">
@@ -108,7 +117,7 @@
 packages = []
   </py-config>
 
-  <py-script src="program/app.py"></py-script>
+  <py-script src="app.py"></py-script>
 
   <py-script>
 from js import document, window

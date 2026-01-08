@@ -10,21 +10,30 @@
 <body class="bg-gray-50 text-gray-900">
   <div class="max-w-6xl mx-auto p-4 space-y-6">
     <header class="bg-white border rounded-3xl p-5">
-      <div class="flex items-center gap-3">
-        <img src="posind.png" class="w-10 h-10 object-contain border rounded-xl bg-white" onerror="this.style.display='none'">
-        <div class="min-w-0">
-          <div class="font-bold text-lg truncate">Kuesioner Evaluasi Kinerja Aplikasi POSPAY (COBIT 5)</div>
-          <div class="text-sm text-gray-500 truncate">PT Pos Indonesia (Persero) • Cabang Rengat</div>
-        </div>
+  <div class="flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-12 h-12 rounded-2xl border bg-white p-2 shadow-sm">
+        <img src="pospay.png" alt="Logo POSPAY" class="w-full h-full object-contain" />
       </div>
+      <div class="min-w-0">
+        <div class="font-extrabold text-lg truncate">Kuesioner Evaluasi POSPAY (COBIT 5)</div>
+        <div class="text-sm text-gray-500 truncate">PT Pos Indonesia (Persero) • Cabang Rengat</div>
+      </div>
+    </div>
 
-      <nav class="mt-4 flex flex-wrap gap-2 text-sm">
-        <a href="program/index.html" class="px-4 py-2 rounded-xl bg-gray-900 text-white font-semibold">Beranda</a>
-        <a href="program/kuesioner.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Kuesioner</a>
-        <a href="program/download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
-        <a href="program/tentang.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Tentang</a>
-      </nav>
-    </header>
+    <div class="w-10 h-10 rounded-2xl border bg-white p-2 shadow-sm hidden sm:block">
+      <img src="posind.png" alt="Logo Pos Indonesia" class="w-full h-full object-contain" />
+    </div>
+  </div>
+
+  <nav class="mt-4 flex flex-wrap gap-2 text-sm">
+    <a href="index.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Beranda</a>
+    <a href="kuesioner.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Kuesioner</a>
+    <a href="download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
+    <a href="tentang.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Tentang</a>
+  </nav>
+</header>
+
 
     <section class="bg-white border rounded-3xl p-6 space-y-4">
       <h1 class="text-2xl font-bold">Beranda</h1>
@@ -51,17 +60,17 @@
       </div>
 
       <div class="grid md:grid-cols-3 gap-4 pt-2">
-        <a href="program/kuesioner.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
+        <a href="kuesioner.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
           <div class="text-lg font-bold">Isi Kuesioner</div>
           <div class="mt-1 text-sm text-gray-600">Halaman pengisian pertanyaan dan perhitungan maturity level.</div>
         </a>
 
-        <a href="program/download.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
+        <a href="download.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
           <div class="text-lg font-bold">Download POSPAY</div>
           <div class="mt-1 text-sm text-gray-600">Tautan resmi unduhan aplikasi (Android & iPhone).</div>
         </a>
 
-        <a href="program/tentang.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
+        <a href="tentang.html" class="block rounded-3xl border bg-white p-5 hover:bg-gray-50">
           <div class="text-lg font-bold">Tentang & FAQ</div>
           <div class="mt-1 text-sm text-gray-600">Informasi POSPAY, FAQ, dan kontak peneliti.</div>
         </a>

@@ -9,18 +9,31 @@
 
 <body class="bg-gray-50 text-gray-900">
   <div class="max-w-6xl mx-auto p-4 space-y-6">
-    <header class="bg-white border rounded-3xl p-5 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <img src="posind.png" class="w-10 h-10 object-contain border rounded-xl bg-white" onerror="this.style.display='none'">
-        <div>
-          <div class="font-bold text-lg">Download POSPAY</div>
-          <div class="text-sm text-gray-500">Tautan resmi unduhan aplikasi</div>
-        </div>
+    <header class="bg-white border rounded-3xl p-5">
+  <div class="flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-12 h-12 rounded-2xl border bg-white p-2 shadow-sm">
+        <img src="pospay.png" alt="Logo POSPAY" class="w-full h-full object-contain" />
       </div>
-      <a href="./index.html" class="text-sm font-semibold px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">
-        Beranda
-      </a>
-    </header>
+      <div class="min-w-0">
+        <div class="font-extrabold text-lg truncate">Kuesioner Evaluasi POSPAY (COBIT 5)</div>
+        <div class="text-sm text-gray-500 truncate">PT Pos Indonesia (Persero) • Cabang Rengat</div>
+      </div>
+    </div>
+
+    <div class="w-10 h-10 rounded-2xl border bg-white p-2 shadow-sm hidden sm:block">
+      <img src="posind.png" alt="Logo Pos Indonesia" class="w-full h-full object-contain" />
+    </div>
+  </div>
+
+  <nav class="mt-4 flex flex-wrap gap-2 text-sm">
+    <a href="index.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Beranda</a>
+    <a href="kuesioner.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Kuesioner</a>
+    <a href="download.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Download</a>
+    <a href="tentang.html" class="px-4 py-2 rounded-xl border bg-white hover:bg-gray-100">Tentang</a>
+  </nav>
+</header>
+
 
     <section class="bg-white border rounded-3xl p-6">
       <h1 class="text-2xl font-bold">Unduh Aplikasi</h1>
@@ -43,7 +56,7 @@
       </div>
 
       <div class="mt-6">
-        <a href="./kuesioner.html" class="text-sm font-semibold underline">
+        <a href="kuesioner.html" class="text-sm font-semibold underline">
           Lanjut mengisi kuesioner →
         </a>
       </div>
